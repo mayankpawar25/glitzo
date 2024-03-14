@@ -1,0 +1,38 @@
+{
+  "name": "glitzo",
+  "version": "1.0.0",
+  "description": "whatsapp messaging services for FnP application",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm run test",
+    "start": "nodemon app.js",
+    "lt": "lt --port 3000 --subdomain theglitzo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://WebCraft-IT@dev.azure.com/WebCraft-IT/WebCraft%20Bot%20Platform/_git/FnPWaBot"
+  },
+  "keywords": [
+    "bot",
+    "whatsapp",
+    "FnP",
+    "WebCraft",
+    "It"
+  ],
+  "author": "WebCraft IT",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "mysql": "^2.18.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "twilio": "^4.21.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.1",
+    "nodemon": "^3.1.0"
+  }
+}
