@@ -16,18 +16,26 @@ const receiveMessage = async (req, res) => {
         let product_det = [];
         let order_id = '';
 
+        console.log(replyMessage);
+
         // Check if the message is a greeting
         const isGreeting = constants.greetings.includes(replyMessage.toLowerCase());
-        
-        // Get user data from the database
-        const userResult = await modal.getData('user', '*', `mobile_number LIKE "${From}"`);
+
+         // MySQL select query
+         const userResult = await new Promise((resolve, reject) => {
+            modal.getData('user', '*', `mobile_number LIKE "${From}"`, async (result) => {
+                resolve(result);
+            });
+        });
 
         // Mysql check user exists
-        if (!userResult) {
+        if (userResult == undefined) {
             // insert 
             status = 'welcome';
-            const insertResult = await modal.insertData('user', 'name, mobile_number, status', `'${ProfileName}', '${From}', '${status}'`);
-            user_id = insertResult.lastInsertId;
+            modal.insertData('user', 'name, mobile_number, status', `'${ProfileName}', '${From}', '${status}'`, (err, lastInsertId) => {
+                if(err) { console.log(err) }
+                user_id = lastInsertId;
+            })
         } else {
             // get user_id
             user_id = userResult['id'];
@@ -37,24 +45,34 @@ const receiveMessage = async (req, res) => {
         // Check for greetings if yes then set last order as cancelled if any
         if (isGreeting) {
             // If it's a greeting, update the last user order status to 'cancelled' if it's pending or processing
-            const lastUserOrder = await modal.getData('user_orders', '*', `user_id = "${user_id}" ORDER BY id DESC LIMIT 1`);
+            const lastUserOrder = await new Promise((resolve, reject) => {
+                modal.getData('user_orders', '*', `user_id = "${user_id}" ORDER BY id DESC LIMIT 1`, async (lastOrderDet) => {
+                    resolve(lastOrderDet)
+                });
+            });
+            
             if (lastUserOrder && (lastUserOrder['order_status'] === 'pending' || lastUserOrder['order_status'] === 'processing')) {
                 await modal.updateData('user_orders', `order_status='cancelled'`, `order_id = "${lastUserOrder['order_id']}"`);
             }
+        } else {
+            // MySQL get data from user_oder query
+            const userOrderResult = await new Promise((resolve, reject) => {
+                modal.getData('user_orders', '*', `user_id = "${user_id}" AND (order_status != "completed" AND order_status != "cancelled")  ORDER BY id DESC LIMIT 1`, async (orderDet) => {
+                    resolve(orderDet)
+                });
+            });
+            
+            if(userOrderResult !== undefined) {
+                order_status = userOrderResult['order_status'];
+                product_det = JSON.parse(userOrderResult['product_det']);
+                order_id = userOrderResult['order_id'];
+            }
         }
 
-        // Get user order data
-        const userOrderResult = await modal.getData('user_orders', '*', `user_id = "${user_id}" AND (order_status != "completed" AND order_status != "cancelled")  ORDER BY id DESC LIMIT 1`);
+        // Chat flow here
+        processUserInteraction(ProfileName, From, replyMessage, user_id, status, order_status, product_det, order_id);
 
-        if(userOrderResult) {
-            order_status = userOrderResult['order_status'];
-            product_det = JSON.parse(userOrderResult['product_det']);
-            order_id = userOrderResult['order_id'];
-        }
 
-        // Process user interaction
-        await processUserInteraction(ProfileName, From, replyMessage, user_id, status, order_status, product_det, order_id);
-        
     } catch (error) {
         console.error('Error handling message:', error);
         res.status(500).send("Error handling message and sending feedback");
@@ -89,7 +107,7 @@ async function processUserInteraction(profileName, from, replyMessage, user_id, 
             await whatsapp.sendWhatsAapMessage(templateId, from, param);
             status = 'products';
             await updateUserStatus(status);
-        } else if (!isNaN(replyMessage) && replyMessage !== 0 && status.includes('products')) {     // Gets the Product number 
+        } else if (!isNaN(replyMessage) && replyMessage != 0 && status.includes('products')) {     // Gets the Product number 
             if (replyMessage > itemCount || replyMessage < 0) {         // Validation for number is between 1 to length of items
                 const templateId = constants.data.invalidProductResponse;
                 param = [itemCount.toString()];
