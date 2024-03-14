@@ -16,8 +16,6 @@ const receiveMessage = async (req, res) => {
         let product_det = [];
         let order_id = '';
 
-        console.log(replyMessage);
-
         // Check if the message is a greeting
         const isGreeting = constants.greetings.includes(replyMessage.toLowerCase());
 
