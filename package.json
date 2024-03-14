@@ -1,7 +1,7 @@
 {
   "name": "glitzo",
   "version": "1.0.0",
-  "description": "whatsapp messaging services for FnP application",
+  "description": "whatsapp messaging services for Glitzo application",
   "main": "app.js",
   "scripts": {
     "test": "npm run test",
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://WebCraft-IT@dev.azure.com/WebCraft-IT/WebCraft%20Bot%20Platform/_git/FnPWaBot"
+    "url": "https://github.com/mayankpawar25/glitzo.git"
   },
   "keywords": [
     "bot",
     "whatsapp",
-    "FnP",
+    "Glitzo",
     "WebCraft",
     "It"
   ],
