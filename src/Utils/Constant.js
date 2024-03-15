@@ -1,4 +1,4 @@
-const greetings = ['hi', 'hello', 'hey', 'holla'];
+const greetings = ['hi', 'hii', 'hiii', 'hiiii', 'hello', 'hey', 'hie', 'hye', 'holla'];
 
 const maxQuantityLimit = 10;
 
@@ -49,7 +49,7 @@ const data = {
   billingSummaryMessage: `HXec5fe4e67b0fc760bca44ec377e7e587`,
   thankyouOrderSuccessMessage: `HXcd747493e46b7cf6b19cc68bfd836853`,
   initNewMessage: `HXffd5e9a73315f4c6e8846f9b6af241f3`,
-  invalidResponse: `HX01cbf52954717a11c3b2cf1e75672ec3`,
+  invalidResponse: `HX34aded0f57fe3338a1ebe12612e6edf0`,
   invalidProductResponse: `HX70fe376a578b4107d0748e042b0a3076`,
   invalidQuantityResponse: `HX5b1c5adcf0ca792770388362fc3806f3`,
   cancelledMessageResponse: `HXb41a1546718ead907e90af65d0d14bd1`,
